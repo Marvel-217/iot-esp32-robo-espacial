@@ -51,9 +51,7 @@ GND      ──────────────► LED Vermelho (cátodo)
 
 ## 🔗 Link do Projeto no Wokwi
 
-👉 **[Clique aqui para acessar o projeto no Wokwi](https://wokwi.com/projects/SEU_ID_AQUI)**
-
-> ⚠️ **Importante:** Substitua `SEU_ID_AQUI` pelo ID real do seu projeto publicado no Wokwi.
+👉 **[Clique aqui para acessar o projeto no Wokwi](https://wokwi.com/projects/463550930172675073)**
 
 ---
 
