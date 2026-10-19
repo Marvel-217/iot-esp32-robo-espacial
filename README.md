@@ -110,8 +110,6 @@ O firmware executa as seguintes etapas continuamente:
 
 - **Marvel-217** – [GitHub](https://github.com/Marvel-217)
 
-> ✏️ **Preencha com os nomes e usuários do GitHub da equipe.**
-
 ---
 
 ## 📚 Referências
