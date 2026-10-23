@@ -1,20 +1,29 @@
 // ===================================================
 // PROJETO: IoT ESP32 - Robô Espacial
 // ETAPA: 01 - Controle Remoto no Wokwi
+// ARQUIVO: controle_remoto.ino
+// ---------------------------------------------------
+// Descrição:
+//   Firmware do controle remoto simulado no Wokwi.
+//   Lê o joystick analógico, envia comandos de
+//   movimento e permite desligar o robô remotamente.
+//
+// Repositório: https://github.com/Marvel-217/iot-esp32-robo-espacial
+// Wokwi:       https://wokwi.com/projects/463550930172675073
 // ===================================================
 
 // --- Definição dos pinos ---
-#define JOYSTICK_X   22   // Eixo X do joystick (ADC)
-#define JOYSTICK_Y   19   // Eixo Y do joystick (ADC)
+// IMPORTANTE: No ESP32, os pinos 34 e 35 são os ideais para leitura analógica (ADC)
+#define JOYSTICK_X   34   // Eixo X do joystick (ADC)
+#define JOYSTICK_Y   35   // Eixo Y do joystick (ADC)
 #define BOTAO        17   // Botão de desligar (INPUT_PULLUP)
 #define LED_VERDE    25   // Status: conectado / funcionando
 #define LED_VERMELHO 26   // Status: desligado / desconectado
 
 // --- Parâmetros do Joystick ---
-// Centro será calibrado automaticamente no setup()
 int centroX = 2048;
 int centroY = 2048;
-const int ZONA_MORTA = 800; // Zona morta maior para evitar disparos falsos no Wokwi
+const int ZONA_MORTA = 300; // Ajustado para detectar o movimento no Wokwi
 
 // --- Variáveis de estado ---
 bool roboLigado = true;
@@ -26,20 +35,23 @@ void setup() {
   Serial.begin(115200);
   delay(500);
 
+  // Configuração dos pinos
   pinMode(LED_VERDE, OUTPUT);
   pinMode(LED_VERMELHO, OUTPUT);
   pinMode(BOTAO, INPUT_PULLUP);
 
+  // Estado inicial: robô ligado, LED verde aceso
   digitalWrite(LED_VERDE, HIGH);
   digitalWrite(LED_VERMELHO, LOW);
 
   Serial.println("\n==========================================");
   Serial.println("  CONTROLE REMOTO - ROBO ESPACIAL");
+  Serial.println("  Etapa 01 - Wokwi");
   Serial.println("==========================================");
   
   // --- CALIBRAÇÃO DO JOYSTICK ---
   Serial.println("Calibrando joystick... NAO MOVA O JOYSTICK!");
-  delay(1500); // Tempo para o simulador estabilizar
+  delay(1000); // Tempo para estabilizar
   
   long somaX = 0;
   long somaY = 0;
@@ -61,7 +73,7 @@ void setup() {
 }
 
 void loop() {
-  // --- Leitura do botão ---
+  // --- Leitura do botão de desligar ---
   bool estadoBotao = digitalRead(BOTAO);
   if (estadoBotao == LOW && ultimoEstadoBotao == HIGH) {
     if (roboLigado) {
@@ -69,16 +81,18 @@ void loop() {
       digitalWrite(LED_VERDE, LOW);
       digitalWrite(LED_VERMELHO, HIGH);
       Serial.println("Comando enviado: DESLIGAR");
+      Serial.println("Robo DESLIGADO remotamente.");
     } else {
       roboLigado = true;
       digitalWrite(LED_VERDE, HIGH);
       digitalWrite(LED_VERMELHO, LOW);
       Serial.println("Robo RELIGADO. Comunicacao restabelecida.");
     }
-    delay(300); 
+    delay(300); // Debounce
   }
   ultimoEstadoBotao = estadoBotao;
 
+  // --- Se o robô estiver desligado, não envia comandos de movimento ---
   if (!roboLigado) {
     delay(100);
     return;
